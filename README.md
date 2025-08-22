@@ -2,6 +2,8 @@
 
 A simple snake game built with TypeScript and HTML5 Canvas.
 
+[Play it here!](https://ferclaverino.github.io/nibbles/)
+
 ## Screenshot
 
 ![Screenshot of the game](./assets/screenshot.png)

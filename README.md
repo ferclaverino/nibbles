@@ -4,7 +4,7 @@ A simple snake game built with TypeScript and HTML5 Canvas.
 
 ## Screenshot
 
-![Screenshot of the game](screenshot.png)
+![Screenshot of the game](./assets/screenshot.png)
 
 ## How to play
 

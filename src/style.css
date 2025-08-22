@@ -1,20 +1,27 @@
+@import url('https://fonts.googleapis.com/css2?family=Roboto:wght@400;700&display=swap');
+
 body {
-    font-family: sans-serif;
+    font-family: 'Roboto', sans-serif;
     display: flex;
     justify-content: center;
     align-items: center;
     height: 100vh;
     margin: 0;
-    background-color: #f0f0f0;
+    background-color: #2c3e50;
+    color: #ecf0f1;
 }
 
 #app {
     text-align: center;
 }
 
+h1 {
+    font-weight: 700;
+}
+
 canvas {
-    background-color: #000;
-    border: 2px solid #333;
+    background-color: #34495e;
+    border-radius: 5px;
 }
 
 #score {
@@ -28,11 +35,12 @@ canvas {
     font-size: 1em;
     cursor: pointer;
     border: none;
-    background-color: #4CAF50;
+    background-color: #e74c3c;
     color: white;
     border-radius: 5px;
+    transition: background-color 0.3s;
 }
 
 #restartButton:hover {
-    background-color: #45a049;
+    background-color: #c0392b;
 }

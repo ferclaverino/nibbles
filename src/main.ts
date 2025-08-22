@@ -24,12 +24,26 @@ function draw() {
     ctx.clearRect(0, 0, canvas.width, canvas.height);
 
     for (const segment of snake) {
-        ctx.fillStyle = 'lime';
-        ctx.fillRect(segment.x * gridSize, segment.y * gridSize, gridSize, gridSize);
+        drawRoundedRect(segment.x * gridSize, segment.y * gridSize, gridSize, gridSize, 5, '#3498db');
     }
 
-    ctx.fillStyle = 'red';
-    ctx.fillRect(food.x * gridSize, food.y * gridSize, gridSize, gridSize);
+    drawRoundedRect(food.x * gridSize, food.y * gridSize, gridSize, gridSize, 5, '#e74c3c');
+}
+
+function drawRoundedRect(x: number, y: number, width: number, height: number, radius: number, color: string) {
+    ctx.fillStyle = color;
+    ctx.beginPath();
+    ctx.moveTo(x + radius, y);
+    ctx.lineTo(x + width - radius, y);
+    ctx.quadraticCurveTo(x + width, y, x + width, y + radius);
+    ctx.lineTo(x + width, y + height - radius);
+    ctx.quadraticCurveTo(x + width, y + height, x + width - radius, y + height);
+    ctx.lineTo(x + radius, y + height);
+    ctx.quadraticCurveTo(x, y + height, x, y + height - radius);
+    ctx.lineTo(x, y + radius);
+    ctx.quadraticCurveTo(x, y, x + radius, y);
+    ctx.closePath();
+    ctx.fill();
 }
 
 function update() {

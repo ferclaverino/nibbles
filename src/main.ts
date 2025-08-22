@@ -1,133 +1,25 @@
 import './style.css';
+import { createInitialState, update, GameState } from './game';
+import { draw, restartButton, muteButton, backgroundMusic } from './ui';
+import { setupInputHandling } from './input';
 
-const canvas = document.getElementById('gameCanvas') as HTMLCanvasElement;
-const ctx = canvas.getContext('2d')!;
-const scoreElement = document.getElementById('score')!;
-const restartButton = document.getElementById('restartButton') as HTMLButtonElement;
-const backgroundMusic = document.getElementById('backgroundMusic') as HTMLAudioElement;
-const muteButton = document.getElementById('muteButton') as HTMLButtonElement;
-
-const gridSize = 20;
-let score = 0;
-let gameStarted = false;
-
-let snake = [
-    { x: 10, y: 10 },
-];
-
-let food = {
-    x: Math.floor(Math.random() * gridSize),
-    y: Math.floor(Math.random() * gridSize),
-};
-
-let direction = { x: 0, y: 0 };
-let gameOver = false;
-
-function draw() {
-    ctx.clearRect(0, 0, canvas.width, canvas.height);
-
-    for (const segment of snake) {
-        drawRoundedRect(segment.x * gridSize, segment.y * gridSize, gridSize, gridSize, 5, '#3498db');
-    }
-
-    drawRoundedRect(food.x * gridSize, food.y * gridSize, gridSize, gridSize, 5, '#e74c3c');
-}
-
-function drawRoundedRect(x: number, y: number, width: number, height: number, radius: number, color: string) {
-    ctx.fillStyle = color;
-    ctx.beginPath();
-    ctx.moveTo(x + radius, y);
-    ctx.lineTo(x + width - radius, y);
-    ctx.quadraticCurveTo(x + width, y, x + width, y + radius);
-    ctx.lineTo(x + width, y + height - radius);
-    ctx.quadraticCurveTo(x + width, y + height, x + width - radius, y + height);
-    ctx.lineTo(x + radius, y + height);
-    ctx.quadraticCurveTo(x, y + height, x, y + height - radius);
-    ctx.lineTo(x, y + radius);
-    ctx.quadraticCurveTo(x, y, x + radius, y);
-    ctx.closePath();
-    ctx.fill();
-}
-
-function update() {
-    if (gameOver) {
-        restartButton.hidden = false;
-        backgroundMusic.pause();
-        return;
-    }
-
-    if (!gameStarted) {
-        return;
-    }
-
-    const head = { x: snake[0].x + direction.x, y: snake[0].y + direction.y };
-
-    if (head.x < 0 || head.x >= gridSize || head.y < 0 || head.y >= gridSize) {
-        gameOver = true;
-        return;
-    }
-
-    for (const segment of snake) {
-        if (head.x === segment.x && head.y === segment.y) {
-            gameOver = true;
-            return;
-        }
-    }
-
-    snake.unshift(head);
-
-    if (head.x === food.x && head.y === food.y) {
-        score++;
-        scoreElement.textContent = `Score: ${score}`;
-        food = {
-            x: Math.floor(Math.random() * gridSize),
-            y: Math.floor(Math.random() * gridSize),
-        };
-    } else {
-        snake.pop();
-    }
-}
-
-function restartGame() {
-    snake = [{ x: 10, y: 10 }];
-    food = {
-        x: Math.floor(Math.random() * gridSize),
-        y: Math.floor(Math.random() * gridSize),
-    };
-    direction = { x: 0, y: 0 };
-    score = 0;
-    scoreElement.textContent = `Score: ${score}`;
-    gameOver = false;
-    gameStarted = false;
-    restartButton.hidden = true;
-    backgroundMusic.currentTime = 0;
-}
+let gameState = createInitialState();
 
 function gameLoop() {
-    update();
-    draw();
+    gameState = update(gameState);
+    draw(gameState);
     setTimeout(gameLoop, 100);
 }
 
-window.addEventListener('keydown', e => {
-    if (!gameStarted) {
-        gameStarted = true;
-        backgroundMusic.play();
-    }
+function restartGame() {
+    gameState = createInitialState();
+    backgroundMusic.currentTime = 0;
+}
 
-    switch (e.key) {
-        case 'ArrowUp':
-            if (direction.y === 0) direction = { x: 0, y: -1 };
-            break;
-        case 'ArrowDown':
-            if (direction.y === 0) direction = { x: 0, y: 1 };
-            break;
-        case 'ArrowLeft':
-            if (direction.x === 0) direction = { x: -1, y: 0 };
-            break;
-        case 'ArrowRight':
-            if (direction.x === 0) direction = { x: 1, y: 0 };
-            break;
+setupInputHandling(gameState, (newState) => {
+    gameState = newState;
+    if (gameState.gameStarted && !gameState.gameOver) {
+        backgroundMusic.play();
     }
 });
 

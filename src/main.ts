@@ -4,9 +4,12 @@ const canvas = document.getElementById('gameCanvas') as HTMLCanvasElement;
 const ctx = canvas.getContext('2d')!;
 const scoreElement = document.getElementById('score')!;
 const restartButton = document.getElementById('restartButton') as HTMLButtonElement;
+const backgroundMusic = document.getElementById('backgroundMusic') as HTMLAudioElement;
+const muteButton = document.getElementById('muteButton') as HTMLButtonElement;
 
 const gridSize = 20;
 let score = 0;
+let gameStarted = false;
 
 let snake = [
     { x: 10, y: 10 },
@@ -49,10 +52,11 @@ function drawRoundedRect(x: number, y: number, width: number, height: number, ra
 function update() {
     if (gameOver) {
         restartButton.hidden = false;
+        backgroundMusic.pause();
         return;
     }
 
-    if (direction.x === 0 && direction.y === 0) {
+    if (!gameStarted) {
         return;
     }
 
@@ -94,7 +98,9 @@ function restartGame() {
     score = 0;
     scoreElement.textContent = `Score: ${score}`;
     gameOver = false;
+    gameStarted = false;
     restartButton.hidden = true;
+    backgroundMusic.currentTime = 0;
 }
 
 function gameLoop() {
@@ -104,6 +110,11 @@ function gameLoop() {
 }
 
 window.addEventListener('keydown', e => {
+    if (!gameStarted) {
+        gameStarted = true;
+        backgroundMusic.play();
+    }
+
     switch (e.key) {
         case 'ArrowUp':
             if (direction.y === 0) direction = { x: 0, y: -1 };
@@ -121,5 +132,10 @@ window.addEventListener('keydown', e => {
 });
 
 restartButton.addEventListener('click', restartGame);
+
+muteButton.addEventListener('click', () => {
+    backgroundMusic.muted = !backgroundMusic.muted;
+    muteButton.textContent = backgroundMusic.muted ? 'Unmute' : 'Mute';
+});
 
 gameLoop();

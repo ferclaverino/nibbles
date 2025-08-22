@@ -44,3 +44,19 @@ canvas {
 #restartButton:hover {
     background-color: #c0392b;
 }
+
+#muteButton {
+    margin-top: 10px;
+    padding: 10px 20px;
+    font-size: 1em;
+    cursor: pointer;
+    border: none;
+    background-color: #3498db;
+    color: white;
+    border-radius: 5px;
+    transition: background-color 0.3s;
+}
+
+#muteButton:hover {
+    background-color: #2980b9;
+}

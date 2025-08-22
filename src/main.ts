@@ -1,5 +1,5 @@
 import './style.css';
-import { createInitialState, update, GameState } from './game';
+import { createInitialState, update, setDirection, GameState } from './game';
 import { draw, restartButton, muteButton, backgroundMusic } from './ui';
 import { setupInputHandling } from './input';
 
@@ -16,8 +16,18 @@ function restartGame() {
     backgroundMusic.currentTime = 0;
 }
 
-setupInputHandling(gameState, (newState) => {
-    gameState = newState;
+setupInputHandling((newDirection) => {
+    const isMovingHorizontally = gameState.direction.x !== 0;
+    const isMovingVertically = gameState.direction.y !== 0;
+
+    if (isMovingHorizontally && newDirection.x !== 0) {
+        return;
+    }
+    if (isMovingVertically && newDirection.y !== 0) {
+        return;
+    }
+
+    gameState = setDirection(gameState, newDirection);
     if (gameState.gameStarted && !gameState.gameOver) {
         backgroundMusic.play();
     }
